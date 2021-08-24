@@ -1,5 +1,6 @@
 # radiate-backend
-.
+
+```.
 ├── dipdup.env
 ├── dipdup.yml
 ├── docker-compose.yml
@@ -32,3 +33,4 @@
             │   ├── __init__.py
             │   └── withdraw.py
             └── storage.py
+```
