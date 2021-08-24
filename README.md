@@ -1,7 +1,6 @@
 # radiate-backend
 
 ```.
-├── dipdup.env
 ├── dipdup.yml
 ├── docker-compose.yml
 ├── Dockerfile
