@@ -1,0 +1,50 @@
+spec_version: 1.1
+package: radiate
+
+database:
+  kind: postgres
+  host: db
+  port: 5432
+  user: dipdup
+  password: ${POSTGRES_PASSWORD:-default}
+  database: dipdup
+  schema_name: radiate
+
+hasura:
+  url: http://hasura:8080
+  admin_secret: ${ADMIN_SECRET:-default}
+  allow_aggregations: False
+  camel_case: true
+  select_limit: 100
+  
+contracts:
+  radiate_finance:
+    address: KT1A3tb2cZoHo51Ac2H4mRRsBzub867oNWXz
+    typename: radiate
+
+datasources:
+  tzkt_granadanet:
+    kind: tzkt
+    url: https://api.granadanet.tzkt.io/
+    
+indexes:
+  radiate_granadanet:
+    kind: operation
+    datasource: tzkt_granadanet
+    contracts: 
+      - radiate_finance
+    handlers:
+      - callback: on_create_stream
+        pattern:
+          - destination: radiate_finance
+            entrypoint: createStream
+      - callback: on_withdraw
+        pattern:
+          - destination: radiate_finance
+            entrypoint: withdraw
+      - callback: on_cancel
+        pattern:
+          - destination: radiate_finance
+            entrypoint: cancelStream
+
+      
