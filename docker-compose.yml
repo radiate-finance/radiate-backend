@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  indexer:
+    build: .
+    depends_on:
+      - db
+      - hasura
+    restart: "no"
+    env_file: dipdup.env
+
+  db:
+    image: postgres:13
+    restart: always
+    volumes:
+      - db:/var/lib/postgres/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file: dipdup.env
+
+  hasura:
+    image: hasura/graphql-engine:v2.0.1
+    ports:
+      - 127.0.0.1:42000:8080
+    depends_on:
+      - db
+    restart: always
+    env_file: dipdup.env
+    environment:
+      - HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup, http-log, webhook-log, websocket-log, query-log
+  
+volumes:
+  db:
